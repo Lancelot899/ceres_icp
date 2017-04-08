@@ -34,8 +34,8 @@ bool ICPErr::Evaluate(double const *const *parameters, double *residuals, double
     residuals[2] = err(2);
 
     Eigen::Matrix<double, 3, 6> Jac = Eigen::Matrix<double, 3, 6>::Zero();
-    Jac.block<3, 3>(0, 0) = Eigen::Matrix3d::Identity();
-    Jac.block<3, 3>(0, 3) = -Sophus::SO3d::hat(Pj_);
+    Jac.block<3, 3>(0, 0) = -Eigen::Matrix3d::Identity();
+    Jac.block<3, 3>(0, 3) = Sophus::SO3d::hat(Pj_);
     int k = 0;
     for(int i = 0; i < 3; ++i) {
         for(int j = 0; j < 6; ++j) {
@@ -112,10 +112,7 @@ ICPSimulation::ICPSimulation(Sophus::SE3d &se3, Eigen::Matrix<double, 3, 3>& Var
 void ICPSimulation::start() {
 
     double se3[6];
-	Eigen::Matrix<double, 6, 1> real = real_.log();
-	for(int i = 0; i < 6; ++i) {
-		se3[i] = real(i, 0) + 0.1;
-	}
+	memset(se3, 0, 6 * sizeof(double));
 
     ceres::Problem problem;
 	std::vector<Eigen::Vector3d> Pi, Pj;
