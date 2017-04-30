@@ -140,7 +140,10 @@ void ICPSimulation::start() {
     ceres::Solver::Summary summary;
     ceres::Solve(options, &problem, &summary);
     std::cout << summary.BriefReport() << "\n";
-	printf("%lf, %lf, %lf, %lf, %lf, %lf\n", se3[0], se3[1], se3[2], se3[3], se3[4], se3[5]);
+	//printf("%lf, %lf, %lf, %lf, %lf, %lf\n", se3[0], se3[1], se3[2], se3[3], se3[4], se3[5]);
+	std::cout << "real = \n" << real_.matrix3x4() << std::endl;
+	Eigen::Map<Eigen::Matrix<double, 6, 1> > se3lie(se3);
+	std::cout << "esitmate = \n" << Sophus::SE3d::exp(se3lie).matrix3x4() << std::endl;
 }
 
 ICPSimulation::~ICPSimulation() {}
